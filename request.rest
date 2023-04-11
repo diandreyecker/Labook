@@ -1,0 +1,24 @@
+POST http://localhost:3003/user/create
+Content-Type: application/json
+
+{
+    "name": "Teste4",
+    "email": "teste4@gmail.com",
+    "password": "1234567"
+}
+###
+
+POST http://localhost:3003/post/create
+Content-Type: application/json
+
+{
+    "photo": "foto",
+    "description": "descrição aleatoria",
+    "type": "normal",
+    "createdAt": "2023-04-12",
+    "authorId": "Diandrey"
+}
+###
+
+GET http://localhost:3003/post/:id
+Content-Type: application/json
