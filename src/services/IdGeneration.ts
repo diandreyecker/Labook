@@ -1,7 +1,7 @@
-import { v4 } from "uuid";
+import { v4 } from "uuid"
 
 export abstract class IdGenerator {
-    static generatorId = () => {
+    static generateId = () => {
         return v4()
     }
 }

@@ -1,24 +1,29 @@
-POST http://localhost:3003/user/create
+GET http://localhost:3003/users/getAll
+Content-Type: application/json
+
+###
+POST http://localhost:3003/users/create
 Content-Type: application/json
 
 {
-    "name": "Teste4",
-    "email": "teste4@gmail.com",
-    "password": "1234567"
+    "name": "Diandrey C Ecker",
+    "email": "diandrey2@teste.com",
+    "password": "eddad1afadsvadevaefv"
 }
+
 ###
 
 POST http://localhost:3003/post/create
 Content-Type: application/json
 
 {
-    "photo": "foto",
-    "description": "descrição aleatoria",
+    "photo": "foto2",
+    "description": "descrição2",
     "type": "normal",
-    "createdAt": "2023-04-12",
-    "authorId": "Diandrey"
+    "authorId": "993cc4f2-f959-48f2-bc86-5ecdecafe44f"
 }
+
 ###
 
-GET http://localhost:3003/post/:id
+GET http://localhost:3003/post/getall
 Content-Type: application/json

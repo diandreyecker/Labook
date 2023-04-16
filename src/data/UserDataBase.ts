@@ -1,18 +1,29 @@
-import { BaseDataBase } from './BaseDataBase';
+import { User } from "../model/user";
+import { BaseDatabase } from "./BaseDatabase";
 import { CustomError } from './../error/CustomError';
-import { InsertUserInputDTO } from '../model/userDTO';
 
-export const userTable = 'labook_users'
+export class UserDatabase extends BaseDatabase {
 
-export class UserDataBase extends BaseDataBase {
+    private userTable = 'labook_users'
 
-    public createUser = async (user: InsertUserInputDTO): Promise<void> => {
+    public createUser = async (user: User) => {
 
         try {
-            await UserDataBase.connection.insert(user).into(`${userTable}`)
+            await UserDatabase.connection(this.userTable).insert(user)
+        } catch (error: any) {
+            throw new CustomError(error.statusCode, error.message);
+        }
+    }
+
+    public getUsers = async () => {
+
+        try {
+
+            const users: User[] = await UserDatabase.connection.select('*').from(this.userTable)
+            return users;
 
         } catch (error: any) {
-            throw new CustomError(error.message, error.message);
+            throw new Error(error.message);
         }
     }
 }

@@ -1,28 +1,43 @@
-import { CustomError } from '../error/CustomError';
-import { GetPostIdInputDTO, InsertPostInputDTO } from '../model/postDTO';
-import { BaseDataBase } from './BaseDataBase';
+import { Post } from '../model/post';
+import { BaseDatabase } from './BaseDatabase';
 
-export const postTable = 'labook_posts'
+export class PostDatabase extends BaseDatabase {
 
-export class PostDataBase extends BaseDataBase {
+    private postTable = 'labook_posts'
 
-    public createPost = async (post: InsertPostInputDTO): Promise<void> => {
-
+    public createPost = async (post: Post) => {
         try {
-            await PostDataBase.connection.insert(post).into(`${postTable}`)
-
+            await PostDatabase.connection(this.postTable).insert(post)
         } catch (error: any) {
-            throw new CustomError(error.message, error.message);
+            throw new Error(error.message)
         }
     }
 
-    public getPostId = async (id: GetPostIdInputDTO) => {
+
+
+    public getAllPosts = async () => {
+
         try {
-            const result = await PostDataBase.connection(`${postTable}`).select("*").where("id", id)
-            return result
+
+            const allPosts: Post[] = await PostDatabase.connection.select('*').from(this.postTable)
+            return allPosts;
 
         } catch (error: any) {
-            throw new CustomError(error.message, error.message);
+            throw new Error(error.message);
         }
     }
+
+
+    // public getPostId = async (id: string) => {
+    //     try {
+    //         PostDatabase.connection.initialize()
+    //         const allPostsId = await PostDatabase.connection.select('*').where({ id }).from(this.postTable)
+    //         return allPostsId
+    //     } catch (error: any) {
+    //         throw new Error(error.message);
+    //     } finally {
+    //         console.log("conexão encerrada!");
+    //         PostDatabase.connection.destroy();
+    //     }
+    // }
 }

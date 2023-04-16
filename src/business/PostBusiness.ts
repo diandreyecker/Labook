@@ -1,51 +1,87 @@
-import { GetPostIdInputDTO, InsertPostInputDTO, PostInputDTO } from '../model/postDTO';
-import { IdGenerator } from '../services/idGenerator';
-import { PostDataBase } from './../data/PostDataBase';
-import { CustomError } from './../error/CustomError';
+
+import { Post, PostCreateInputDTO } from '../model/post';
+import { IdGenerator } from '../services/IdGeneration';
+import { PostDatabase } from './../data/PostDatabase';
 
 export class PostBusiness {
+   postDatabase = new PostDatabase
 
-    public createPost = async (input: PostInputDTO) => {
-        try {
-            const { photo, description, type, createdAt, authorId } = input
+   public createPost = async (input: PostCreateInputDTO) => {
 
-            if (!photo || !description || !type || !createdAt || !authorId) {
-                throw new Error("Preencha todos os campos");
-            }
+      try {
+         if (
+            !input.photo ||
+            !input.description ||
+            !input.type ||
+            !input.authorId
+         ) {
+            throw new Error("Preencha todos os campos!");
+         }
 
-            const id = IdGenerator.generatorId()
+         const id = IdGenerator.generateId()
 
-            const postInput: InsertPostInputDTO = {
-                id: id,
-                photo: photo,
-                description: description,
-                type: type,
-                created_at: createdAt,
-                author_id: authorId
-            }
+         const post: Post = new Post(id, input.photo, input.description, input.type, input.createdAt, input.authorId)
 
-            const postDataBase = new PostDataBase()
-            await postDataBase.createPost(postInput)
+         await this.postDatabase.createPost(post)
+      } catch (error: any) {
+         throw new Error(error.message)
+      }
+   }
 
-        } catch (error: any) {
-            throw new CustomError(error.message, error.message);
-        }
-    }
 
-    public getPostId = async (input: GetPostIdInputDTO) => {
-        try {
 
-            const id = input
+   public getAllPosts = async () => {
 
-            if (!id) {
-                throw new Error("Preencher todos os dados");
-            }
+      try {
+         const posts: Post[] = await this.postDatabase.getAllPosts()
+         return (posts)
 
-            const postDataBase = new PostDataBase()
-            return await postDataBase.getPostId(input)
+      } catch (error: any) {
+         throw new Error(error.message);
+      }
+   }
 
-        } catch (error: any) {
-            throw new CustomError(error.message, error.message);
-        }
-    }
+
+
+   //business
+   // public getPostId = async (id: string) => {
+
+   //    try {
+   //       return await this.postDatabase.getPostId(id)
+   //    } catch (error: any) {
+   //       throw new Error(error.message);
+   //    }
+   // }
 }
+
+   //    getPostsId = async (req: Request, res: Response) => {
+
+   //       try {
+
+   //           const id = req.params.id
+
+   //           const queryResult = await this.postBusiness("labook_posts").select("*").where({ id })
+
+   //           if (!queryResult[0]) {
+   //               res.statusCode = 404
+   //               message = "Post not found"
+   //               throw new Error(message)
+   //           }
+
+   //           const post: post = {
+   //               id: queryResult[0].id,
+   //               photo: queryResult[0].photo,
+   //               description: queryResult[0].description,
+   //               type: queryResult[0].type,
+   //               createdAt: queryResult[0].created_at,
+   //               authorId: queryResult[0].author_id,
+   //           }
+
+   //           res.status(200).send({ message, post })
+
+   //       } catch (error: any) {
+   //           let message = error.sqlMessage || error.message
+   //           res.statusCode = 400
+   //           res.send({ message })
+   //       }
+   //   }
