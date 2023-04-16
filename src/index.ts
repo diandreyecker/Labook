@@ -1,9 +1,10 @@
-import { app } from "./app";
-import { userRouter } from './routes/userRouter';
+import { app } from './app';
+import { friendshipRouter } from './routes/FriendshipRouter';
 import { postRouter } from './routes/postRouter';
+import { userRouter } from './routes/userRouter';
 
-app.use('/users', userRouter)
-// app.get('/users', userRouter)
+app.use("/user", userRouter)
 
-app.use('/post', postRouter)
-// app.get('/posts/:id')
+app.use("/post", postRouter)
+
+app.use("/friend", friendshipRouter)

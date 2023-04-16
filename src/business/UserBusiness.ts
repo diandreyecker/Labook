@@ -1,41 +1,31 @@
-import { User, UserCreateInputDTO } from '../model/user';
-import { UserDatabase } from './../data/UserDatabase';
-import { IdGenerator } from './../services/IdGeneration';
+import { UserDataBase } from "../data/UserDataBase";
+import { InsertUserInputDTO, UserInputDTO } from "../model/userDTO";
+import { IdGenerator } from "../services/idGenerator";
+import { CustomError } from "../error/CustomError";
+import { InvalidEmail } from "../error/UserErrors";
 
 export class UserBusiness {
 
-    userDatabase = new UserDatabase
+    public createUser = async (input: UserInputDTO) => {
 
-    public createUser = async (input: UserCreateInputDTO) => {
         try {
-            if (
-                !input.getName ||
-                !input.getEmail ||
-                !input.getPassword
-            ) {
-                throw new Error("Preencha todos os campos");
+            if (!input.name || !input.email || !input.password) {
+                throw new InvalidEmail();
             }
-            const id = IdGenerator.generateId()
+            const id = IdGenerator.generatorId()
 
-            const user: User = new User(
-                input.getEmail(),
-                input.getName(),
-                input.getPassword(), id)
+            const user: InsertUserInputDTO = {
+                id: id,
+                name: input.name,
+                email: input.email,
+                password: input.password
+            }
 
-            await this.userDatabase.createUser(user)
-        } catch (error: any) {
-            throw new Error(error.message);
-        }
-    }
-
-    public getUsers = async () => {
-
-        try {
-            const users: User[] = await this.userDatabase.getUsers()
-            return (users)
+            const userDataBase = new UserDataBase()
+            await userDataBase.createUser(user)
 
         } catch (error: any) {
-            throw new Error(error.message);
+            throw new CustomError(error.message, error.message);
         }
     }
 }
